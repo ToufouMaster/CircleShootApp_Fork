@@ -100,6 +100,8 @@ namespace Sexy
 		ButtonWidget *mContinueButton;
 		Widget *mOverlayWidget;
 
+		JumpPadList* mJumpPads;
+
 		TreasurePoint *mCurTreasure;
 		int mCurTreasureNum;
 		int mTreasureEndFrame;
@@ -190,6 +192,7 @@ namespace Sexy
 
 		void AdvanceFreeBullet(BulletList::iterator &theBulletItr);
 		void UpdateBullets();
+		void UpdateGunPos();
 		void UpdatePlaying();
 		void UpdateLosing();
 		void UpdateLevelBegin();
@@ -200,6 +203,7 @@ namespace Sexy
 		void UpdateTreasure();
 		void UpdateMiscStuff();
 
+		void DrawJumpPads(Graphics* g);
 		void DrawTreasure(Graphics *g);
 		void DrawPlaying(Graphics *g);
 		void DrawLosing(Graphics *g);

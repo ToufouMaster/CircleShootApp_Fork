@@ -148,6 +148,7 @@ namespace Sexy
         IMAGE_HOLE_ID,
         IMAGE_HOLE_COVER_ID,
         IMAGE_COIN_ID,
+        IMAGE_PAD_ID,
         IMAGE_RIGHT_MOUSE_ID,
         IMAGE_MENU_BAR_ID,
         IMAGE_MENU_BUTTON_ID,
@@ -181,6 +182,7 @@ namespace Sexy
         SOUND_STAGE_COMPLETE_ID,
         SOUND_TEMPLE_COMPLETE_ID,
         SOUND_BONUS_EXPLOSION_ID,
+        SOUND_LILYPAD_JUMP_ID,
         SOUND_BALLDESTROYED1_ID,
         SOUND_BALLDESTROYED2_ID,
         SOUND_BALLDESTROYED3_ID,
@@ -403,6 +405,7 @@ namespace Sexy
     extern Image* IMAGE_HOLE;
     extern Image* IMAGE_HOLE_COVER;
     extern Image* IMAGE_COIN;
+    extern Image* IMAGE_PAD;
     extern Image* IMAGE_RIGHT_MOUSE;
     extern Image* IMAGE_MENU_BAR;
     extern Image* IMAGE_MENU_BUTTON;
@@ -436,6 +439,7 @@ namespace Sexy
     extern int SOUND_STAGE_COMPLETE;
     extern int SOUND_TEMPLE_COMPLETE;
     extern int SOUND_BONUS_EXPLOSION;
+    extern int SOUND_LILYPAD_JUMP;
     extern int SOUND_BALLDESTROYED1;
     extern int SOUND_BALLDESTROYED2;
     extern int SOUND_BALLDESTROYED3;

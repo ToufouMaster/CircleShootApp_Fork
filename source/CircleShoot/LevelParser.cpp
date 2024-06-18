@@ -389,6 +389,7 @@ void LevelParser::CopyGraphics(LevelDesc &to, LevelDesc &from)
     to.mSprites = from.mSprites;
     to.mBackgroundAlpha = from.mBackgroundAlpha;
     to.mTreasurePoints = from.mTreasurePoints;
+    to.mJumpPads = from.mJumpPads;
     to.mName = from.mName;
     to.mDisplayName = from.mDisplayName;
     to.mInSpace = from.mInSpace;
@@ -448,10 +449,18 @@ bool LevelParser::DoParseLevels()
                     }
                     else if (anElement.mValue == "TreasurePoint")
                     {
-                        LevelDesc &aDesc = mLevels.back();
+                        LevelDesc& aDesc = mLevels.back();
                         aDesc.mTreasurePoints.push_back(TreasurePoint());
 
                         if (!DoParseTreasure(anElement, aDesc.mTreasurePoints.back()))
+                            return false;
+                    }
+                    else if (anElement.mValue == "JumpPad")
+                    {
+                        LevelDesc& aDesc = mLevels.back();
+                        aDesc.mJumpPads.push_back(JumpPad());
+
+                        if (!DoParseJumpPad(anElement, aDesc.mJumpPads.back()))
                             return false;
                     }
                     else
@@ -879,6 +888,23 @@ bool LevelParser::DoParseTreasure(XMLElement &theElem, TreasurePoint &thePoint)
             thePoint.mCurveDist[i] = 0;
     }
 
+    return true;
+}
+
+bool Sexy::LevelParser::DoParseJumpPad(XMLElement& theElem, JumpPad& thePoint)
+{
+    std::string aVal;
+
+    if (GetAttribute(theElem, "x", aVal))
+        ParseInt(aVal.c_str(), &thePoint.x);
+
+    if (GetAttribute(theElem, "y", aVal))
+        ParseInt(aVal.c_str(), &thePoint.y);
+
+    if (GetAttribute(theElem, "used", aVal))
+        ParseBool(aVal.c_str(), &thePoint.used);
+
+    thePoint.hovered = false;
     return true;
 }
 

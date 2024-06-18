@@ -307,6 +307,7 @@ void TransitionMgr::DrawStageCompleteText(Graphics *g)
 void TransitionMgr::DrawStageComplete(Graphics *g)
 {
     mBoard->mSpriteMgr->DrawLevel(g);
+    mBoard->DrawJumpPads(g);
     DrawLevelFade(g);
     DrawStageCompleteText(g);
     DrawLetterStamp(g);
@@ -318,6 +319,8 @@ void TransitionMgr::DrawStageComplete(Graphics *g)
 void TransitionMgr::DrawLevelBegin(Graphics *g)
 {
     mBoard->mSpriteMgr->DrawBackground(g);
+
+    mBoard->DrawJumpPads(g);
 
     for (int i = 0; i < MAX_PRIORITY; i++)
     {
@@ -346,6 +349,7 @@ void TransitionMgr::DrawLosing(Graphics *g)
     mBoard->mSpriteMgr->DrawBackground(g);
     aDrawer.Reset();
 
+    mBoard->DrawJumpPads(g);
     if (mBoard->mPauseCount == 0 || mBoard->mShowBallsDuringPause)
     {
         for (int i = 0; i < mBoard->mNumCurves; i++)
@@ -1106,6 +1110,7 @@ void TransitionMgr::UpdateLetterStamp()
 
 void TransitionMgr::UpdateLevelBegin()
 {
+    mBoard->UpdateGunPos();
     if (mStateCount > mResetFrame)
         mBoard->StartLevel();
 }

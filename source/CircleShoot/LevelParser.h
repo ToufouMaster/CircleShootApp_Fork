@@ -45,6 +45,17 @@ namespace Sexy
 
 	///////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////
+	class JumpPad
+	{
+	public:
+		int x, y;
+		bool used;
+		bool hovered;
+	};
+	typedef std::list<JumpPad> JumpPadList;
+
+	///////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////
 	class CurveDesc
 	{
 	public:
@@ -98,6 +109,7 @@ namespace Sexy
 		SpriteDescList mSprites;
 		SpriteDescList mBackgroundAlpha;
 		TreasurePointList mTreasurePoints;
+		JumpPadList mJumpPads;
 		bool mInSpace;
 
 		int mStage;
@@ -149,7 +161,8 @@ namespace Sexy
 		bool DoParseLevels();
 		bool DoParseLevel(XMLElement &theElem, bool isLevel);
 		bool DoParseSprite(XMLElement &theElem, SpriteDesc &theSprite);
-		bool DoParseTreasure(XMLElement &theElem, TreasurePoint &thePoint);
+		bool DoParseTreasure(XMLElement& theElem, TreasurePoint& thePoint);
+		bool DoParseJumpPad(XMLElement& theElem, JumpPad& thePoint);
 		bool DoParseLevelProgression(XMLElement &theElem);
 		bool DoParseStageProgression(XMLElement &theElem, int theStage);
 		void CreateBoardProgression();

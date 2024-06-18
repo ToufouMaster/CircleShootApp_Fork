@@ -120,6 +120,7 @@ Board::Board(CircleShootApp *theApp)
 {
     mApp = theApp;
     mGun = new Gun();
+    mJumpPads = nullptr;
 
     mMenuButton = new ButtonWidget(0, this);
     mContinueButton = MakeButton(1, this, "CONTINUE", 1, NULL, 3);
@@ -193,6 +194,7 @@ Board::~Board()
     delete mTransitionMgr;
     delete mSoundMgr;
     delete mGun;
+    //delete mJumpPads;
     delete mLevelDesc;
     delete mNextLevelDesc;
     delete mMenuButton;
@@ -212,8 +214,15 @@ void Board::LoadProc()
         Sexy::MirrorPoint(mNextLevelDesc->mGunX, mNextLevelDesc->mGunY, MirrorType_None);
 
         for (TreasurePointList::iterator anItr = mNextLevelDesc->mTreasurePoints.begin();
-             anItr != mNextLevelDesc->mTreasurePoints.end();
-             anItr++)
+            anItr != mNextLevelDesc->mTreasurePoints.end();
+            anItr++)
+        {
+            Sexy::MirrorPoint(anItr->x, anItr->y, MirrorType_None);
+        }
+
+        for (JumpPadList::iterator anItr = mNextLevelDesc->mJumpPads.begin();
+            anItr != mNextLevelDesc->mJumpPads.end();
+            anItr++)
         {
             Sexy::MirrorPoint(anItr->x, anItr->y, MirrorType_None);
         }
@@ -237,6 +246,8 @@ void Board::LoadProc()
             if (mNextLevelDesc->mCurveDesc[i].mDrawCurve)
                 mNextCurveMgr[i]->DrawCurve(aCurveDrawer);
         }
+
+        mJumpPads = &mNextLevelDesc->mJumpPads;
 
         aCurveDrawer.AddCurvesToMgr();
         CreateThumbnail(mNextSpriteMgr, mNextLevelDesc);
@@ -348,7 +359,9 @@ void Board::DoLevelUp(bool playSounds, bool isCheat)
         int aTreasure = (mCurTreasure != NULL) ? mCurTreasureNum : -1;
         mLevel++;
 
+        JumpPadList padList = mLevelDesc->mJumpPads;
         GetLevel(mLevel, mLevelDesc, mLevelDesc->mName.c_str());
+        mLevelDesc->mJumpPads = padList;
 
         if (aTreasure >= 0)
         {
@@ -588,6 +601,17 @@ void Board::UpdateBullets()
     }
 }
 
+void Board::UpdateGunPos() {
+    for (JumpPadList::iterator aPadItr = mJumpPads->begin(); aPadItr != mJumpPads->end();
+        aPadItr++)
+    {
+        if (aPadItr->used) {
+            mGun->SetPos(aPadItr->x + 60, aPadItr->y + 60);
+            break;
+        }
+    }
+}
+
 void Board::UpdatePlaying()
 {
     Bullet *aBullet = mGun->GetFiredBullet();
@@ -597,6 +621,7 @@ void Board::UpdatePlaying()
         CheckReload();
     }
 
+    UpdateGunPos();
     UpdateBullets();
     UpdateTreasure();
 
@@ -999,6 +1024,18 @@ void Board::UpdateMiscStuff()
     MarkDirty();
 }
 
+void Board::DrawJumpPads(Graphics* g)
+{
+    for (JumpPadList::iterator anItr = mJumpPads->begin(); anItr != mJumpPads->end(); anItr++) {
+        int x = (*anItr).x;
+        int y = (*anItr).y;
+        int hovered = (*anItr).hovered;
+
+        g->SetColorizeImages(false);
+        g->DrawImageCel(Sexy::IMAGE_PAD, x, y, hovered);
+    }
+}
+
 void Board::DrawTreasure(Graphics *g)
 {
     if (mCurTreasure != NULL)
@@ -1058,6 +1095,7 @@ void Board::DrawPlaying(Graphics *g)
     mSpriteMgr->DrawBackground(g);
     aDrawer.Reset();
 
+    DrawJumpPads(g);
     if (mPauseCount == 0 || mShowBallsDuringPause)
     {
         for (int i = 0; i < mNumCurves; i++)
@@ -1404,6 +1442,27 @@ void Board::MouseMove(int x, int y)
         }
     }
 
+    if (mGameState != GameState_Losing && mGameState != GameState_LevelBegin)
+    {
+        bool alreadyHovered = false;
+        if (mJumpPads != nullptr) {
+            for (JumpPadList::iterator aPadItr = mJumpPads->begin(); aPadItr != mJumpPads->end();
+                aPadItr++)
+            {
+                aPadItr->hovered = false;
+                if (alreadyHovered || aPadItr->used) {
+                    continue;
+                }
+                if (aPadItr->x < x && aPadItr->x + 120 > x) {
+                    if (aPadItr->y < y && aPadItr->y + 120 > y) {
+                        aPadItr->hovered = true;
+                        alreadyHovered = true;
+                    }
+                }
+            }
+        }
+    }
+
     mGun->SetAngle(angle);
     mRecalcGuide = true;
     MarkDirty();
@@ -1435,7 +1494,29 @@ void Board::MouseDown(int x, int y, int theClickCount)
 
             if (theClickCount >= 0)
             {
-                if (mGun->StartFire())
+                bool jumped = false;
+                if (mJumpPads != nullptr) {
+                    JumpPad* pad = nullptr;
+                    for (JumpPadList::iterator aPadItr = mJumpPads->begin(); aPadItr != mJumpPads->end();
+                        aPadItr++)
+                    {
+                        if (!aPadItr->hovered) continue;
+                        jumped = true;
+                        aPadItr->used = true;
+                        pad = &*aPadItr;
+                    }
+                    if (jumped) {
+                        mApp->PlaySample(Sexy::SOUND_LILYPAD_JUMP);
+                        for (JumpPadList::iterator aPadItr = mJumpPads->begin(); aPadItr != mJumpPads->end();
+                            aPadItr++)
+                        {
+                            if (&*aPadItr != pad) {
+                                aPadItr->used = false;
+                            }
+                        }
+                    }
+                }
+                if (!jumped && mGun->StartFire())
                 {
                     mApp->PlaySample(Sexy::SOUND_BALLFIRE);
                 }
@@ -1787,6 +1868,15 @@ void Board::SyncState(DataSync &theSync)
     mTransitionMgr->SyncState(theSync);
     mSpriteMgr->SyncState(theSync);
 
+    for (JumpPadList::iterator anItr = mJumpPads->begin();
+        anItr != mJumpPads->end();
+        anItr++)
+    {
+        theSync.SyncShort(anItr->x);
+        theSync.SyncShort(anItr->y);
+        theSync.SyncBool(anItr->used);
+    }
+    
     for (int i = 0; i < mNumCurves; i++)
     {
         mCurveMgr[i]->SyncState(theSync);

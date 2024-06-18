@@ -147,6 +147,7 @@ static void *gResources[] =
         &IMAGE_HOLE,
         &IMAGE_HOLE_COVER,
         &IMAGE_COIN,
+        &IMAGE_PAD,
         &IMAGE_RIGHT_MOUSE,
         &IMAGE_MENU_BAR,
         &IMAGE_MENU_BUTTON,
@@ -180,6 +181,7 @@ static void *gResources[] =
         &SOUND_STAGE_COMPLETE,
         &SOUND_TEMPLE_COMPLETE,
         &SOUND_BONUS_EXPLOSION,
+        &SOUND_LILYPAD_JUMP,
         &SOUND_BALLDESTROYED1,
         &SOUND_BALLDESTROYED2,
         &SOUND_BALLDESTROYED3,
@@ -599,6 +601,7 @@ bool Sexy::ExtractLoadingThreadResources(ResourceManager *theMgr)
         IMAGE_HOLE = aMgr.GetImageThrow("IMAGE_HOLE");
         IMAGE_HOLE_COVER = aMgr.GetImageThrow("IMAGE_HOLE_COVER");
         IMAGE_COIN = aMgr.GetImageThrow("IMAGE_COIN");
+        IMAGE_PAD = aMgr.GetImageThrow("IMAGE_PAD");
         IMAGE_RIGHT_MOUSE = aMgr.GetImageThrow("IMAGE_RIGHT_MOUSE");
         IMAGE_MENU_BAR = aMgr.GetImageThrow("IMAGE_MENU_BAR");
         IMAGE_MENU_BUTTON = aMgr.GetImageThrow("IMAGE_MENU_BUTTON");
@@ -632,6 +635,7 @@ bool Sexy::ExtractLoadingThreadResources(ResourceManager *theMgr)
         SOUND_STAGE_COMPLETE = aMgr.GetSoundThrow("SOUND_STAGE_COMPLETE");
         SOUND_TEMPLE_COMPLETE = aMgr.GetSoundThrow("SOUND_TEMPLE_COMPLETE");
         SOUND_BONUS_EXPLOSION = aMgr.GetSoundThrow("SOUND_BONUS_EXPLOSION");
+        SOUND_LILYPAD_JUMP = aMgr.GetSoundThrow("SOUND_LILYPAD_JUMP");
         SOUND_BALLDESTROYED1 = aMgr.GetSoundThrow("SOUND_BALLDESTROYED1");
         SOUND_BALLDESTROYED2 = aMgr.GetSoundThrow("SOUND_BALLDESTROYED2");
         SOUND_BALLDESTROYED3 = aMgr.GetSoundThrow("SOUND_BALLDESTROYED3");
@@ -715,7 +719,8 @@ Image *Sexy::IMAGE_UPDATE_BAR;
 Image *Sexy::IMAGE_GOD_HEAD;
 Image *Sexy::IMAGE_HOLE;
 Image *Sexy::IMAGE_HOLE_COVER;
-Image *Sexy::IMAGE_COIN;
+Image* Sexy::IMAGE_COIN;
+Image* Sexy::IMAGE_PAD;
 Image *Sexy::IMAGE_RIGHT_MOUSE;
 Image *Sexy::IMAGE_MENU_BAR;
 Image *Sexy::IMAGE_MENU_BUTTON;
@@ -749,6 +754,7 @@ int Sexy::SOUND_GAME_OVER;
 int Sexy::SOUND_STAGE_COMPLETE;
 int Sexy::SOUND_TEMPLE_COMPLETE;
 int Sexy::SOUND_BONUS_EXPLOSION;
+int Sexy::SOUND_LILYPAD_JUMP;
 int Sexy::SOUND_BALLDESTROYED1;
 int Sexy::SOUND_BALLDESTROYED2;
 int Sexy::SOUND_BALLDESTROYED3;
